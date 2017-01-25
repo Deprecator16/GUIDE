@@ -1,0 +1,581 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>431</width>
+    <height>345</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QGroupBox" name="inventaire_GroupBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>20</y>
+      <width>191</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <italic>false</italic>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Gestion des stocks</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+    <widget class="QPushButton" name="item_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>121</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Consultation des articles</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="adjustment_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>181</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Ajustement</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="inventoryTransfer_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>181</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Tranfert d'inventaire</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="reports_GoupBox">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>20</y>
+      <width>181</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="title">
+     <string>Rapports</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+    <widget class="QPushButton" name="saleHistory_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>158</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Historique des installations</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="inventory_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>158</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Inventaire</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="purchaseHistory_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>158</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Historique des achats</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="supplier_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>130</y>
+       <width>211</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Comptes fournisseurs</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="technician_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>211</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Comptes techniciens</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="saleHistory_PushButton_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>158</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Historique des tranfert</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="sales_GroupBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>120</y>
+      <width>191</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Ventes</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+    <widget class="QPushButton" name="newInstallation_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>181</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Nouvelle installation</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="purchases_GroupBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>210</y>
+      <width>191</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>8</pointsize>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
+    <property name="title">
+     <string>Achats</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+    <widget class="QPushButton" name="newPurchase_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>181</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Nouvel achat</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="receivePurchase_PushButton">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>181</width>
+       <height>25</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">text-align: left</string>
+     </property>
+     <property name="text">
+      <string>Réception d'un achat</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>431</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuInventaire">
+    <property name="title">
+     <string>Inventaire</string>
+    </property>
+    <widget class="QMenu" name="menuIdentifiant">
+     <property name="title">
+      <string>Identifiant</string>
+     </property>
+     <addaction name="commentUID_Act"/>
+     <addaction name="destroyUID_Act"/>
+    </widget>
+    <addaction name="separator"/>
+    <addaction name="item_Act"/>
+    <addaction name="separator"/>
+    <addaction name="ajustment_Act"/>
+    <addaction name="transfer_Act"/>
+    <addaction name="separator"/>
+    <addaction name="menuIdentifiant"/>
+   </widget>
+   <widget class="QMenu" name="menuAchats">
+    <property name="title">
+     <string>Achats</string>
+    </property>
+    <addaction name="newPurchase_Act"/>
+    <addaction name="receivePurchase_Act"/>
+   </widget>
+   <widget class="QMenu" name="menuVentes">
+    <property name="title">
+     <string>Ventes</string>
+    </property>
+    <addaction name="newInstallation_Act"/>
+    <addaction name="editInstallation_Act"/>
+   </widget>
+   <widget class="QMenu" name="menuRapports">
+    <property name="title">
+     <string>Rapports</string>
+    </property>
+    <addaction name="inventory_Act"/>
+    <addaction name="purchaseHistory_Act"/>
+    <addaction name="salesHistory_Act"/>
+    <addaction name="technicien_Act"/>
+    <addaction name="supplier_Act"/>
+   </widget>
+   <widget class="QMenu" name="menuGestion">
+    <property name="title">
+     <string>Gestion</string>
+    </property>
+    <widget class="QMenu" name="menuArticle">
+     <property name="title">
+      <string>Article</string>
+     </property>
+     <addaction name="createItem_Act"/>
+     <addaction name="editItem_Act"/>
+    </widget>
+    <widget class="QMenu" name="menuFabriquant">
+     <property name="title">
+      <string>Fabriquant</string>
+     </property>
+     <addaction name="createManufacturer_Act"/>
+     <addaction name="editManufacturer_Act"/>
+    </widget>
+    <widget class="QMenu" name="menuTechnicien">
+     <property name="title">
+      <string>Technicien</string>
+     </property>
+     <addaction name="createTechnicien_Act"/>
+     <addaction name="editTechnicien_Act"/>
+    </widget>
+    <widget class="QMenu" name="menuFournisseur">
+     <property name="title">
+      <string>Fournisseur</string>
+     </property>
+     <addaction name="createSupplier_Act"/>
+     <addaction name="editSupplier_Act"/>
+    </widget>
+    <widget class="QMenu" name="menuSite">
+     <property name="title">
+      <string>Site</string>
+     </property>
+     <addaction name="newSite_Act"/>
+     <addaction name="editSite_Act"/>
+    </widget>
+    <addaction name="menuArticle"/>
+    <addaction name="separator"/>
+    <addaction name="menuTechnicien"/>
+    <addaction name="menuFournisseur"/>
+    <addaction name="menuFabriquant"/>
+    <addaction name="menuSite"/>
+    <addaction name="separator"/>
+    <addaction name="preference_act"/>
+   </widget>
+   <addaction name="menuInventaire"/>
+   <addaction name="menuVentes"/>
+   <addaction name="menuAchats"/>
+   <addaction name="menuRapports"/>
+   <addaction name="menuGestion"/>
+  </widget>
+  <action name="createItem_Act">
+   <property name="text">
+    <string>Créer un article</string>
+   </property>
+  </action>
+  <action name="editItem_Act">
+   <property name="text">
+    <string>Modifier un article</string>
+   </property>
+  </action>
+  <action name="createManufacturer_Act">
+   <property name="text">
+    <string>Créer un fabriquant</string>
+   </property>
+  </action>
+  <action name="editManufacturer_Act">
+   <property name="text">
+    <string>Modifier un fabriquant</string>
+   </property>
+  </action>
+  <action name="preference_act">
+   <property name="text">
+    <string>Préférences</string>
+   </property>
+  </action>
+  <action name="createTechnicien_Act">
+   <property name="text">
+    <string>Créer un technicien</string>
+   </property>
+  </action>
+  <action name="editTechnicien_Act">
+   <property name="text">
+    <string>Modifier un technicien</string>
+   </property>
+  </action>
+  <action name="createSupplier_Act">
+   <property name="text">
+    <string>Créer un fournisseur</string>
+   </property>
+  </action>
+  <action name="editSupplier_Act">
+   <property name="text">
+    <string>Modifier un fournisseur</string>
+   </property>
+  </action>
+  <action name="item_Act">
+   <property name="text">
+    <string>Article</string>
+   </property>
+  </action>
+  <action name="receivePurchase_Act">
+   <property name="text">
+    <string>Réception d'un achat</string>
+   </property>
+  </action>
+  <action name="editInstallation_Act">
+   <property name="text">
+    <string>Modification d'une installation</string>
+   </property>
+  </action>
+  <action name="inventory_Act">
+   <property name="text">
+    <string>Inventaire</string>
+   </property>
+  </action>
+  <action name="purchaseHistory_Act">
+   <property name="text">
+    <string>Historique des achats</string>
+   </property>
+  </action>
+  <action name="salesHistory_Act">
+   <property name="text">
+    <string>Historique des ventes</string>
+   </property>
+  </action>
+  <action name="technicien_Act">
+   <property name="text">
+    <string>Comptes technicien</string>
+   </property>
+  </action>
+  <action name="supplier_Act">
+   <property name="text">
+    <string>Comptes fournisseur</string>
+   </property>
+  </action>
+  <action name="newInstallation_Act">
+   <property name="text">
+    <string>Nouvelle installation</string>
+   </property>
+  </action>
+  <action name="newPurchase_Act">
+   <property name="text">
+    <string>Nouvel achat</string>
+   </property>
+  </action>
+  <action name="inventoryTransfer_Act">
+   <property name="text">
+    <string>Transfert d'inventaire</string>
+   </property>
+  </action>
+  <action name="commentUID_Act">
+   <property name="text">
+    <string>Ajout d'un commentaire sur un identifiant</string>
+   </property>
+  </action>
+  <action name="destroyUID_Act">
+   <property name="text">
+    <string>Destruction d'un identifiant</string>
+   </property>
+  </action>
+  <action name="newSite_Act">
+   <property name="text">
+    <string>Créer un site</string>
+   </property>
+  </action>
+  <action name="editSite_Act">
+   <property name="text">
+    <string>Modifier un site</string>
+   </property>
+  </action>
+  <action name="transfer_Act">
+   <property name="text">
+    <string>Transfert</string>
+   </property>
+  </action>
+  <action name="ajustment_Act">
+   <property name="text">
+    <string>Ajustement</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

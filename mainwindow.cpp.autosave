@@ -1,0 +1,709 @@
+#include "mainwindow.h"
+#include "createnewbusiness.h"
+#include "refine.h"
+#include "item.h"
+#include "manufacturer.h"
+#include "supplier.h"
+#include "technician.h"
+#include "element.h"
+#include "installation.h"
+#include "site.h"
+#include "inventorytransfer.h"
+#include "adjustment.h"
+
+#include "ui_mainwindow.h"
+
+#include <QCloseEvent>
+#include <QApplication>
+#include <QSettings>
+#include <QMessageBox>
+#include <QDesktopWidget>
+#include <QtSql>
+#include <QtXml/QDomDocument>
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    readSettings();
+
+    setWindowTitle("GUIDE");
+    setMinimumSize(430, 325);
+
+    connect(ui->createItem_Act, SIGNAL(triggered()),
+            this, SLOT(openNewItem()));
+    connect(ui->editItem_Act, SIGNAL(triggered()),
+            this, SLOT(openEditItem()));
+    connect(ui->item_Act, SIGNAL(triggered()),
+            this, SLOT(openViewItem()));
+    connect(ui->item_PushButton, SIGNAL(pressed()),
+            this, SLOT(openViewItem()));
+    connect(ui->createManufacturer_Act, SIGNAL(triggered()),
+            this, SLOT(openNewManufacturer()));
+    connect(ui->editManufacturer_Act, SIGNAL(triggered()),
+            this, SLOT(openEditManufacturer()));
+    connect(ui->createSupplier_Act, SIGNAL(triggered()),
+            this, SLOT(openNewSupplier()));
+    connect(ui->editSupplier_Act, SIGNAL(triggered()),
+            this, SLOT(openEditSupplier()));
+    connect(ui->createTechnicien_Act, SIGNAL(triggered()),
+            this, SLOT(openNewTechnicien()));
+    connect(ui->editTechnicien_Act, SIGNAL(triggered()),
+            this, SLOT(openEditTechnicien()));
+    connect(ui->technician_PushButton, SIGNAL(pressed()),
+            this, SLOT(openViewTechnicien()));
+    connect(ui->newInstallation_Act, SIGNAL(triggered()),
+            this, SLOT(openNewInstallation()));
+    connect(ui->newInstallation_PushButton, SIGNAL(pressed()),
+            this, SLOT(openNewInstallation()));
+    connect(ui->newPurchase_Act, SIGNAL(triggered()),
+            this, SLOT(openNewPurchase()));
+    connect(ui->newPurchase_PushButton, SIGNAL(pressed()),
+            this, SLOT(openNewPurchase()));
+    connect(ui->receivePurchase_Act, SIGNAL(triggered()),
+            this, SLOT(openReceivePurchase()));
+    connect(ui->receivePurchase_PushButton, SIGNAL(pressed()),
+            this, SLOT(openReceivePurchase()));
+    connect(ui->inventoryTransfer_Act, SIGNAL(triggered(bool)),
+            this, SLOT(openNewInventoryTransfer()));
+    connect(ui->inventoryTransfer_PushButton, SIGNAL(pressed()),
+            this, SLOT(openNewInventoryTransfer()));
+    connect(ui->newSite_Act, SIGNAL(triggered()),
+            this, SLOT(openNewSite()));
+    connect(ui->editSite_Act, SIGNAL(triggered()),
+            this, SLOT(openEditSite()));
+    connect(ui->ajustment_Act, SIGNAL(triggered()),
+            this, SLOT(openNewAdjustment()));
+    connect(ui->adjustment_PushButton, SIGNAL(pressed()),
+            this, SLOT(openNewAdjustment()));
+}
+
+MainWindow::~MainWindow()
+{
+    delete ui;
+}
+
+void MainWindow::readSettings()
+{
+    QSettings settings ("GUIDE", "Samuel Drouin");
+
+    QRect screen = QApplication::desktop()->availableGeometry();
+    int w = settings.value("Geometries/MainWindowWidth", screen.width()-100).toInt();
+    int h = settings.value("Geometries/MainWindowHeight", screen.height()-100).toInt();
+    int x = settings.value("Geometries/MainWindowX", screen.x()+10).toInt();
+    int y = settings.value("Geometries/MainWindowY", screen.y()+10).toInt();
+    bool toBeMaximized = settings.value("MainWindow/Maximized", false).toBool();
+    QString pathToDatabase = settings.value("Business/DefaultDatabase").toString();
+
+    if (toBeMaximized == true)
+           showMaximized();
+    else
+    {
+        if (!screen.contains(x,y))
+        {
+            x = screen.x()+10;
+            y = screen.y()+10;
+            if (x+w > screen.right())
+            {
+                w = screen.width()-100;
+            }
+            if (y+h > screen.left())
+            {
+                h = screen.height()-100;
+            }
+        }
+        resize(w,h);
+        move(x,y);
+    }
+
+    if (!pathToDatabase.isEmpty())
+    {
+        bool ret = openBusiness(pathToDatabase);
+        if (ret = false)
+        {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle("Gestionnaire d'inventaire Ondenet");
+            msgBox.setText("Impossible d'ouvrir la base de donnée");
+            msgBox.setInformativeText("Vérifiez que vous disposez des permissions nécessaire pour effectuer l'opération.");
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.exec();
+        }
+    }
+    else
+        openNewBusinessDialog();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    writeSettings();
+    event->accept();
+}
+
+void MainWindow::writeSettings()
+{
+    QSettings settings ("GUIDE", "Samuel Drouin");
+    settings.setValue("MainWindow/Maximized", isMaximized());
+
+    settings.setValue("Geometries/MainWindowWidth", width());
+    settings.setValue("Geometries/MainWindowHeight", height());
+    settings.setValue("Geometries/MainWindowX", x());
+    settings.setValue("Geometries/MainWindowY", y());
+}
+
+void MainWindow::openEditItem()
+{
+    UpdateItem *updateItem = new UpdateItem(this);
+    updateItem->show();
+}
+
+void MainWindow::openNewItem()
+{
+    NewItem *newItem = new NewItem(this);
+    newItem->show();
+}
+
+void MainWindow::openViewItem()
+{
+    ViewItem *viewItem = new ViewItem(this);
+    viewItem->show();
+}
+
+void MainWindow::openNewManufacturer()
+{
+    NewManufacturer *newManufacturer = new NewManufacturer(this);
+    newManufacturer->show();
+}
+
+void MainWindow::openEditManufacturer()
+{
+    UpdateManufacturer *updateManufacturer = new UpdateManufacturer(this);
+    updateManufacturer->show();
+}
+
+void MainWindow::openNewSupplier()
+{
+    NewSupplier *newSupplier = new NewSupplier(this);
+    newSupplier->show();
+}
+
+void MainWindow::openEditSupplier()
+{
+    UpdateSupplier *updateSupplier = new UpdateSupplier(this);
+    updateSupplier->show();
+}
+
+void MainWindow::openViewSupplier()
+{
+
+}
+
+void MainWindow::openNewTechnicien()
+{
+    NewTechnician *newTechnicien = new NewTechnician(this);
+    newTechnicien->show();
+}
+
+void MainWindow::openEditTechnicien()
+{
+    UpdateTechnician *updateTechnician = new UpdateTechnician(this);
+    updateTechnician->show();
+}
+
+void MainWindow::openViewTechnicien()
+{
+    ViewTechnician *viewTechnician = new ViewTechnician(this);
+    viewTechnician->show();
+}
+
+void MainWindow::openNewInstallation()
+{
+    NewInstallation *newInstallation = new NewInstallation(this);
+    newInstallation->show();
+}
+
+void MainWindow::openNewPurchase()
+{
+
+}
+
+void MainWindow::openReceivePurchase()
+{
+
+}
+
+void MainWindow::openNewInventoryTransfer()
+{
+    NewInventoryTransfer *newInventoryTransfer = new NewInventoryTransfer(this);
+    newInventoryTransfer->show();
+}
+
+void MainWindow::openNewSite()
+{
+    NewSite *newSite = new NewSite(this);
+    newSite->show();
+}
+
+void MainWindow::openEditSite()
+{
+    UpdateSite *updateSite = new UpdateSite(this);
+    updateSite->show();
+}
+
+void MainWindow::openNewAdjustment()
+{
+    NewAdjustement *adjustment = new NewAdjustement(this);
+    adjustment->show();
+}
+
+/*
+void MainWindow::createDockWidget()
+{
+    refine_DockWidget = new QDockWidget(tr("Refine"), this);
+    refine_DockWidget->setAllowedAreas(Qt::TopDockWidgetArea);
+    refine_DockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+    addDockWidget(Qt::TopDockWidgetArea, refine_DockWidget);
+
+    inventory_DockWidget = new QDockWidget(tr("Inventory"), this);
+    inventory_DockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
+    inventory_DockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+
+    QListWidget *inventoryList = new QListWidget(this);
+    new QListWidgetItem(tr("Inventory"), inventoryList);
+
+    inventory_DockWidget->setWidget(inventoryList);
+    addDockWidget(Qt::LeftDockWidgetArea, inventory_DockWidget);
+    connect(inventoryList, SIGNAL(itemClicked(QListWidgetItem*)),
+            this, SLOT(showTable(QListWidgetItem*)));
+
+    invoice_DockWidget = new QDockWidget(tr("Invoice"), this);
+    inventory_DockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
+    inventory_DockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+
+    QListWidget *invoiceList = new QListWidget(this);
+    new QListWidgetItem(tr("Sales"), invoiceList);
+    new QListWidgetItem(tr("Purchases"), invoiceList);
+
+    invoice_DockWidget->setWidget(invoiceList);
+    addDockWidget(Qt::LeftDockWidgetArea, invoice_DockWidget);
+    connect(invoiceList, SIGNAL(itemClicked(QListWidgetItem*)),
+            this, SLOT(showTable(QListWidgetItem*)));
+
+    account_DockWidget = new QDockWidget(tr("Account"), this);
+    account_DockWidget->setAllowedAreas(Qt::LeftDockWidgetArea);
+    account_DockWidget->setFeatures(QDockWidget::NoDockWidgetFeatures);
+
+    QListWidget *accountList = new QListWidget(this);
+    new QListWidgetItem(tr("Technicien"), accountList);
+    new QListWidgetItem(tr("Supplier"), accountList);
+    new QListWidgetItem(tr("Manufacturer"), accountList);
+
+    account_DockWidget->setWidget(accountList);
+    addDockWidget(Qt::LeftDockWidgetArea, account_DockWidget);
+    connect(accountList, SIGNAL(itemClicked(QListWidgetItem*)),
+            this, SLOT(showTable(QListWidgetItem*)));
+}*/
+/*
+void MainWindow::showTable(QListWidgetItem *item)
+{
+    if (item->text() == "Inventory")
+    {
+       disconnectUnusedTableSlots();
+       table->clear();
+       table->setRowCount(0);
+       table->setColumnCount(6);
+
+       QStringList headers;
+       headers << tr("Manufacturer") << tr("Part Number") << tr("Name") << tr("Localisation") << tr("Stock") << tr("Allocated");
+       table->setHorizontalHeaderLabels(headers);
+
+       StockRefine *refine = new StockRefine(this);
+       refine_DockWidget->setWidget(refine);
+
+       QSqlQuery query;
+       QString queryString = "SELECT manufacturer_code, part_number, product_name, localisation, stock_quantity, allocated_quantity "
+                             "FROM inventory "
+                             "NATURAL LEFT OUTER JOIN allocated "
+                             "WHERE allocated.allocation_type = 1 OR allocated.allocation_type IS NULL "
+                             "ORDER BY manufacturer_code ASC, part_number ASC";
+       query.exec(queryString);
+
+       connect(refine, SIGNAL(doRefineElement(bool,bool,QString,QString,QString)),
+               this, SLOT(refineItem(bool,bool,QString,QString,QString)));
+       connect(table, SIGNAL(cellDoubleClicked(int,int)),
+               this, SLOT(openSelectedItem(int,int)), Qt::UniqueConnection);
+
+       int i = 0;
+       while (query.next())
+       {
+          table->insertRow(i);
+          table->setItem(i, 0, new QTableWidgetItem(query.value(0).toString()));
+          table->setItem(i, 1, new QTableWidgetItem(query.value(1).toString()));
+          table->setItem(i, 2, new QTableWidgetItem(query.value(2).toString()));
+          table->setItem(i, 3, new QTableWidgetItem(query.value(3).toString()));
+          table->setItem(i, 4, new QTableWidgetItem(query.value(4).toString()));
+          QString allocated = query.value(5).toString();
+          if (allocated.isNull())
+             allocated = "0";
+          table->setItem(i, 5, new QTableWidgetItem(allocated));
+          i++;
+       }
+    }
+    else if (item->text() == "Sales")
+    {
+
+    }
+    else if (item->text() == "Purchases")
+    {
+
+    }
+    else if (item->text() == "Technicien")
+    {
+        disconnectUnusedTableSlots();
+        table->clear();
+        table->setRowCount(0);
+        table->setColumnCount(4);
+
+        QStringList headers;
+        headers << tr("Number") << tr("Name") << tr("Phone number") << tr("Email");
+        table->setHorizontalHeaderLabels(headers);
+
+        TechnicianRefine *refine = new TechnicianRefine(this);
+        refine_DockWidget->setWidget(refine);
+
+        QSqlQuery query;
+        QString queryString = "SELECT technician_id, technician_name, phone_number, email "
+                              "FROM technician "
+                              "ORDER BY technician_name ASC";
+        query.exec(queryString);
+
+        connect(refine, SIGNAL(doRefineElement(QString,QString)),
+                this, SLOT(refineTechnician(QString,QString)));
+        connect(table, SIGNAL(cellDoubleClicked(int,int)),
+                this, SLOT(openSelectedTechnician(int,int)), Qt::UniqueConnection);
+
+        int i = 0;
+        while (query.next())
+        {
+            table->insertRow(i);
+            table->setItem(i, 0, new QTableWidgetItem(query.value(0).toString()));
+            table->setItem(i, 1, new QTableWidgetItem(query.value(1).toString()));
+            table->setItem(i, 2, new QTableWidgetItem(query.value(2).toString()));
+            table->setItem(i, 3, new QTableWidgetItem(query.value(3).toString()));
+            i++;
+        }
+    }
+    else if (item->text() == "Supplier")
+    {
+        disconnectUnusedTableSlots();
+        table->clear();
+        table->setRowCount(0);
+        table->setColumnCount(4);
+
+        QStringList headers;
+        headers << tr("Number") << tr("Name") << tr("Phone number") << tr("Email");
+        table->setHorizontalHeaderLabels(headers);
+
+        SupplierRefine *refine = new SupplierRefine(this);
+        refine_DockWidget->setWidget(refine);
+
+        QSqlQuery query;
+        QString queryString = "SELECT supplier_id, supplier_name, phone_number, email "
+                              "FROM suppliers "
+                              "ORDER BY supplier_name ASC";
+        query.exec(queryString);
+
+        connect(refine, SIGNAL(doRefineElement(QString,QString)),
+                this, SLOT(refineSupplier(QString,QString)));
+        connect(table, SIGNAL(cellDoubleClicked(int,int)),
+                this, SLOT(openSelectedSupplier(int,int)), Qt::UniqueConnection);
+
+        int i = 0;
+        while (query.next())
+        {
+            table->insertRow(i);
+            table->setItem(i, 0, new QTableWidgetItem(query.value(0).toString()));
+            table->setItem(i, 1, new QTableWidgetItem(query.value(1).toString()));
+            table->setItem(i, 2, new QTableWidgetItem(query.value(2).toString()));
+            table->setItem(i, 3, new QTableWidgetItem(query.value(3).toString()));
+            i++;
+        }
+    }
+    else if (item->text() == "Manufacturer")
+    {
+        disconnectUnusedTableSlots();
+        table->clear();
+        table->setRowCount(0);
+        table->setColumnCount(2);
+
+        QStringList headers;
+        headers << tr("Code") << tr("Name");
+        table->setHorizontalHeaderLabels(headers);
+
+        ManufacturerRefine *refine = new ManufacturerRefine(this);
+        refine_DockWidget->setWidget(refine);
+
+        QSqlQuery query;
+        QString queryString = "SELECT * "
+                              "FROM manufacturer "
+                              "ORDER BY manufacturer_code ASC";
+        query.exec(queryString);
+
+        connect(refine, SIGNAL(doRefineElement(QString,QString)),
+                this, SLOT(refineManufacturer(QString,QString)));
+        connect(table, SIGNAL(cellDoubleClicked(int,int)),
+                this, SLOT(openSelectedManufacturer(int,int)), Qt::UniqueConnection);
+
+        int i = 0;
+        while (query.next()) {
+            table->insertRow(i);
+            table->setItem(i, 0, new QTableWidgetItem(query.value(0).toString()));
+            table->setItem(i, 1, new QTableWidgetItem(query.value(1).toString()));
+            i++;
+        }
+    }
+}
+*/
+/*
+void MainWindow::refineItem(bool underMinimum, bool overMaximum, QString manufacturer, QString name, QString localisation)
+{
+    table->clearContents();
+    table->setRowCount(0);
+    table->setColumnCount(5);
+
+    QSqlQuery query;
+    QString str = "SELECT manufacturer_code, part_number, product_name, localisation, stock_quantity, allocated_quantity "
+                  "FROM inventory";
+
+    if (underMinimum == true || overMaximum == true || !manufacturer.isEmpty() || !name.isEmpty() || !localisation.isEmpty())
+    {
+        str.append("WHERE ");
+
+        if (underMinimum == true)
+            str.append("stock_quantity < (SELECT minimum FROM inventory) AND ");
+        if (overMaximum == true)
+            str.append("stock_quantity < (SELECT maximum FROM inventory) AND ");
+        if (!manufacturer.isEmpty())
+            str.append("manufacturer_code LIKE ").append(Element::toQueryLikeString(manufacturer));
+            str.append(" OR manufacturer_code = (SELECT manufacturer_code FROM manufacturer WHERE manufacturer_name LIKE ")
+                    .append(Element::toQueryLikeString(manufacturer)).append("AND ");
+        if (!name.isEmpty())
+            str.append("product_name LIKE ").append(Element::toQueryLikeString(name)).append("AND ");
+        if (!localisation.isEmpty())
+            str.append("localisation LIKE ").append(Element::toQueryLikeString(localisation)).append("AND ");
+
+        str.remove(str.length() - 4, str.length() - 1);
+
+    }
+
+    str.append("NATURAL LEFT OUTER JOIN allocated ");
+    str.append("WHERE allocated.allocation_type = 1 OR allocated.allocation_type IS NULL ");
+    str.append("ORDER BY manufacturer_code ASC, part_number ASC");
+    query.exec(str);
+
+    int i = 0;
+    while (query.next())
+    {
+        table->setItem(i, 0, new QTableWidgetItem(query.value(0).toString()));
+        table->setItem(i, 1, new QTableWidgetItem(query.value(1).toString()));
+        table->setItem(i, 2, new QTableWidgetItem(query.value(2).toString()));
+        table->setItem(i, 3, new QTableWidgetItem(query.value(3).toString()));
+        table->setItem(i, 4, new QTableWidgetItem(query.value(4).toString()));
+        QString allocated = query.value(5).toString();
+        if (allocated.isNull())
+            allocated = "0";
+        table->setItem(i, 5, new QTableWidgetItem(query.value(5).toString()));
+        i++;
+    }
+}
+
+void MainWindow::refineManufacturer(QString name, QString code)
+{
+    table->clearContents();
+    table->setRowCount(0);
+    table->setColumnCount(2);
+
+    QSqlQuery query;
+    QString queryString = "SELECT * "
+                          "FROM manufacturer ";
+
+    if (!code.isEmpty() || !name.isEmpty())
+    {
+        queryString.append("WHERE ");
+
+        if (!code.isEmpty())
+            queryString.append("manufacturer_code = ").append(Element::toQueryTextString(code)).append("AND ");
+        if (!name.isEmpty())
+            queryString.append("manufacturer_name LIKE ").append(Element::toQueryLikeString(name)).append("AND ");
+
+        queryString.remove(queryString.length() - 4, queryString.length() - 1);
+    }
+
+    queryString.append("ORDER BY manufacturer_code ASC ");
+    query.exec(queryString);
+
+    int i = 0;
+    while (query.next())
+    {
+        table->insertRow(i);
+        table->setItem(i, 0, new QTableWidgetItem(query.value(0).toString()));
+        table->setItem(i, 1, new QTableWidgetItem(query.value(1).toString()));
+        i++;
+    }
+}
+
+
+
+void MainWindow::refineSupplier(QString number, QString name)
+{
+    table->clearContents();
+    table->setRowCount(0);
+    table->setColumnCount(4);
+
+    QSqlQuery query;
+    QString queryString = "SELECT supplier_id, supplier_name, phone_number, email "
+                          "FROM supplier ";
+
+    if (!number.isEmpty() || !number.isEmpty())
+    {
+        queryString.append("WHERE ");
+
+        if (!number.isEmpty())
+            queryString.append("supplier_id = ").append(Element::toQueryTextString(number)).append("AND ");
+        if (!name.isEmpty())
+            queryString.append("supplier_name LIKE ").append(Element::toQueryLikeString(name)).append("AND ");
+
+        queryString.remove(queryString.length() - 4, queryString.length() - 1);
+    }
+
+    queryString.append("ORDER BY supplier_name ASC");
+    query.exec(queryString);
+
+    int i = 0;
+    while (query.next())
+    {
+        table->insertRow(i);
+        table->setItem(i, 0, new QTableWidgetItem(query.value(0).toString()));
+        table->setItem(i, 1, new QTableWidgetItem(query.value(1).toString()));
+        table->setItem(i, 2, new QTableWidgetItem(query.value(2).toString()));
+        table->setItem(i, 3, new QTableWidgetItem(query.value(3).toString()));
+        i++;
+    }
+}
+
+void MainWindow::refineTechnician(QString number, QString name)
+{
+    table->clearContents();
+    table->setRowCount(0);
+    table->setColumnCount(4);
+
+    QSqlQuery query;
+    QString queryString = "SELECT technician_id, technician_name, phone_number, email "
+                          "FROM technician ";
+
+    if (!number.isEmpty() || !number.isEmpty()) {
+        queryString.append("WHERE ");
+
+        if (!number.isEmpty()) {
+            queryString.append("technician_id = ").append(Element::toQueryTextString(number)).append("AND ");
+        }
+        if (!name.isEmpty()) {
+            queryString.append("technician_name LIKE ").append(Element::toQueryLikeString(name)).append("AND ");
+        }
+
+        queryString.remove(queryString.length() - 4, queryString.length() - 1);
+    }
+
+    queryString.append("ORDER BY technician_name ASC");
+    query.exec(queryString);
+
+    int i = 0;
+    while (query.next()) {
+        table->insertRow(i);
+        table->setItem(i, 0, new QTableWidgetItem(query.value(0).toString()));
+        table->setItem(i, 1, new QTableWidgetItem(query.value(1).toString()));
+        table->setItem(i, 2, new QTableWidgetItem(query.value(2).toString()));
+        table->setItem(i, 3, new QTableWidgetItem(query.value(3).toString()));
+        i++;
+    }
+}
+
+void MainWindow::openSelectedItem(int r, int c)
+{
+    Q_UNUSED(c)
+    UpdateItem *updateItem = new UpdateItem(this);
+    updateItem->openItem(table->item(r, 0)->text(), table->item(r, 1)->text());
+    updateItem->show();
+}
+
+void MainWindow::openSelectedManufacturer(int r, int c)
+{
+    Q_UNUSED(c)
+    UpdateManufacturer *updateManufacturer = new UpdateManufacturer(this);
+    updateManufacturer->openAccount(table->item(r, 0)->text());
+    updateManufacturer->show();
+}
+
+void MainWindow::openSelectedSupplier(int r, int c)
+{
+    Q_UNUSED (c)
+    UpdateSupplier *updateSupplier = new UpdateSupplier(this);
+    updateSupplier->openAccount(table->item(r, 0)->text());
+    updateSupplier->show();
+}
+
+void MainWindow::openSelectedTechnician(int r, int c)
+{
+    Q_UNUSED (c)
+    UpdateTechnician *updateTechnician = new UpdateTechnician(this);
+    updateTechnician->openAccount(table->item(r, 0)->text());
+    updateTechnician->show();
+}
+
+// Remove connection from previously openned element
+void MainWindow::disconnectUnusedTableSlots()
+{
+    disconnect(table, SIGNAL(cellDoubleClicked(int,int)),
+             this, SLOT(openSelectedItem(int,int)));
+    disconnect(table, SIGNAL(cellDoubleClicked(int,int)),
+             this, SLOT(openSelectedTechnician(int,int)));
+    disconnect(table, SIGNAL(cellDoubleClicked(int,int)),
+             this, SLOT(openSelectedSupplier(int,int)));
+    disconnect(table, SIGNAL(cellDoubleClicked(int,int)),
+             this, SLOT(openSelectedManufacturer(int,int)));
+}
+*/
+void MainWindow::openNewBusinessDialog()
+{
+    CreateNewBusiness *newBusiness = new CreateNewBusiness(this);
+    newBusiness->show();
+
+    connect(newBusiness, SIGNAL(doReadSettings()),
+            this, SLOT(readSettings()));
+}
+
+bool MainWindow::openBusiness(QString pathToDatabase)
+{
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName(pathToDatabase);
+
+    if (!db.open())
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle("Gestionnaire d'inventaire Ondenet");
+        msgBox.setText("Erreur de requête SQLite");
+        //msgBox.setInformativeText(db.lastError().text());
+        msgBox.setInformativeText("ERROR");
+        msgBox.setStandardButtons(QMessageBox::Cancel | QMessageBox::Retry);
+        msgBox.setDefaultButton(QMessageBox::Retry);
+
+        if (msgBox.exec() == QMessageBox::Retry)
+            MainWindow::openBusiness(pathToDatabase);
+
+        return false;
+    }
+    return true;
+}
+
